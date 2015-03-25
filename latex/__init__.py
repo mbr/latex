@@ -20,9 +20,16 @@ CHAR_ESCAPE = {
 }
 
 
-ESCAPE_RE = re.compile(r'|'.join(re.escape(k) for k in
-                                 sorted(CHAR_ESCAPE.keys())))
+def _tbl_re(tbl):
+    return re.compile(r'|'.join(re.escape(k) for k in sorted(tbl.keys())))
+
+
+def _re_translate(exp, tbl, s):
+    return exp.sub(lambda m: tbl[m.group()], s)
+
+
+ESCAPE_RE = _tbl_re(CHAR_ESCAPE)
 
 
 def escape_chars(s):
-    return ESCAPE_RE.sub(lambda m: CHAR_ESCAPE[m.group()], s)
+    return _re_translate(ESCAPE_RE, CHAR_ESCAPE, s)
