@@ -27,7 +27,7 @@ def _sub_tbl(tbl):
 ESCAPE_RE = re.compile(r'\n+|' + _sub_tbl(CHAR_ESCAPE))
 
 
-def escape_chars(s, fold_newlines=True):
+def escape(s, fold_newlines=True):
     def sub(m):
         c = m.group()
         if c in CHAR_ESCAPE:
