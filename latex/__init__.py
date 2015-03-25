@@ -20,16 +20,22 @@ CHAR_ESCAPE = {
 }
 
 
-def _tbl_re(tbl):
-    return re.compile(r'|'.join(re.escape(k) for k in sorted(tbl.keys())))
+def _sub_tbl(tbl):
+    return r'|'.join(re.escape(k) for k in sorted(tbl.keys()))
 
 
-def _re_translate(exp, tbl, s):
-    return exp.sub(lambda m: tbl[m.group()], s)
+ESCAPE_RE = re.compile(r'\n+|' + _sub_tbl(CHAR_ESCAPE))
 
 
-ESCAPE_RE = _tbl_re(CHAR_ESCAPE)
+def escape_chars(s, fold_newlines=True):
+    def sub(m):
+        c = m.group()
+        if c in CHAR_ESCAPE:
+            return CHAR_ESCAPE[c]
 
+        if c.isspace():
+            if fold_newlines:
+                return r'\\'
+            return r'\\[{}\baselineskip]'.format(len(c))
 
-def escape_chars(s):
-    return _re_translate(ESCAPE_RE, CHAR_ESCAPE, s)
+    return ESCAPE_RE.sub(sub, s)
