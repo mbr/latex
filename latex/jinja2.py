@@ -1,6 +1,7 @@
 from markupsafe import Markup
-from tex import escape_latex
 from jinja2 import Environment
+
+from . import escape
 
 
 class LatexMarkup(Markup):
@@ -15,13 +16,10 @@ class LatexMarkup(Markup):
         if hasattr(s, '__html__'):
             return s.__html__()
 
-        rv = escape_latex(s)
+        rv = escape(s)
         if rv.__class__ is not cls:
             return cls(rv)
         return rv
-
-
-escape = LatexMarkup.escape
 
 
 ENV_ARGS = {
