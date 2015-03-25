@@ -9,10 +9,35 @@ Also comes with support for using `Jinja2 <http://jinja.pocoo.org/>`_ templates
 to generate LaTeX files.
 
 
+Jinja2 templates
+~~~~~~~~~~~~~~~~
+
+:py:function:`~latex.jinja2.make_env` can be used to create an
+:py:class:`~jinja2.Environment` that plays well with LaTex:
+
+.. highlight:: jinja2
+
+   Variables can be used in a LaTeX friendly way: Hello, \VAR{name|e}.
+
+   Note that autoescaping is off. Blocks are creating using the block macro:
+
+   \BLOCK{if weather is 'good'}
+   Hooray.
+   \BLOCK{endif}
+
+   \#{comments are supported as well}
+   %# and so are line comments
+
+   To keep things short, line statements can be used:
+
+   %- if weather is good
+   %- endif
+
+
 API
 ===
 
-.. py:method:: latex.escape(s, fold_newlines=True)
+.. py:function:: latex.escape(s, fold_newlines=True)
 
    Escapes a string to make it usable in LaTeX text mode. Will replace special
    characters as well as newlines.
