@@ -5,6 +5,22 @@ import tempfile
 from tempdir import TempDir
 
 
+class LaTeXError(Exception):
+    def __str__(self):
+        return str(self.log)
+
+    @classmethod
+    def from_proc_error(cls, e, logfn=None):
+        err = cls()
+        err.log = None
+        err.call_exc = e
+
+        if os.path.exists(logfn):
+            err.log = open(logfn).read()
+
+        return err
+
+
 def build_pdf(source,
               latex_cmd='pdflatex',
               texinputs=[''],
@@ -48,13 +64,16 @@ def build_pdf(source,
 
         prev_aux = None
         while True:
-            subprocess.check_call(
-                args,
-                cwd=tmpdir,
-                env=newenv,
-                stdin=open(os.devnull, 'r'),
-                stdout=open(os.devnull, 'w'),
-            )
+            try:
+                subprocess.check_call(
+                    args,
+                    cwd=tmpdir,
+                    env=newenv,
+                    stdin=open(os.devnull, 'r'),
+                    stdout=open(os.devnull, 'w'),
+                )
+            except subprocess.CalledProcessError as e:
+                raise LaTeXError.from_proc_error(e, base_fn + '.log')
 
             # check aux-file
             aux = open(aux_fn, 'rb').read()
