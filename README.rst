@@ -1,6 +1,10 @@
 pyLaTeX
 =======
 
+.. highlight:: python
+
+Documentation can be found at https://pythonhosted.org/latex .
+
 Allows calling LaTeX from Python without leaving a mess. Similar to the
 (officially obsolete) `tex <https://pypi.python.org/pypi/tex/>`_ package, whose
 `successor <http://www.profv.de/texcaller/>`_ is not PyPi-installable::
@@ -40,5 +44,3 @@ to generate LaTeX files.
    %- if weather is good
    Yay.
    %- endif
-
-Documentation can be found at https://pythonhosted.org/latex .
