@@ -39,6 +39,17 @@ ENV_ARGS = {
 
 
 def make_env(*args, **kwargs):
+    """Creates an :py:class:`~jinja2.Environment` with different defaults.
+
+    Per default, ``autoescape`` will be disabled and ``trim_blocks`` enabled.
+    All start/end/prefix strings will be changed for a more LaTeX-friendly
+    version (see the docs for details).
+
+    Any arguments will be passed on to the :py:class:`~jinja2.Environment`
+    constructor and override new values.
+
+    Finally, the ``|e``, ``|escape`` and ``|forceescape`` filters will be
+    replaced with a call to :func:`latex.escape`."""
     ka = ENV_ARGS.copy()
     ka.update(kwargs)
 
