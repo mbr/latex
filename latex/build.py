@@ -40,6 +40,9 @@ def build_pdf(source,
     exception is raised and the generation is aborted with a
     :class:`RuntimeError`.
 
+    If there are errors calling pdflatex, a :class:`~latex.build.LaTeXError` is
+    raised.
+
     :param source: The LaTeX source.
     :param latex_cmd: The path for the ``pdflatex`` binary to use.
     :param texinputs: Include paths for TeX. An empty string causes the default
