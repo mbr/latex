@@ -9,7 +9,20 @@ def build_pdf(source,
               latex_cmd='pdflatex',
               texinputs=[''],
               max_runs=15):
-    # for documentation, see README.rst
+    """Generates a PDF from LaTeX a source, using pdflatex and a temporary
+    directory, to avoid leaving behind temporary files.
+
+    pdflatex will be run as many times as necessary; at ``max_runs`` runs, an
+    exception is raised and the generation is aborted with a
+    :class:`RuntimeError`.
+
+    :param source: The LaTeX source.
+    :param latex_cmd: The path for the ``pdflatex`` binary to use.
+    :param texinputs: Include paths for TeX. An empty string causes the default
+                      path to be added (see the tex manpage).
+    :param max_runs: Maximum number of reruns.
+    :returns: A binary string of the generated PDF file.
+    """
 
     with TempDir() as tmpdir:
         input_fd, input_fn = tempfile.mkstemp(suffix='.latex', dir=tmpdir)

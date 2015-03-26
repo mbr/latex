@@ -28,6 +28,14 @@ ESCAPE_RE = re.compile(r'\n+|' + _sub_tbl(CHAR_ESCAPE))
 
 
 def escape(s, fold_newlines=True):
+    """Escapes a string to make it usable in LaTeX text mode. Will replace
+    special characters as well as newlines.
+
+    :param s: The string to escape.
+    :param fold_newlines: If true, multiple newlines will be reduced to just a
+                          single ``\\``. Otherwise, whitespace is kept intact
+                          by adding multiple ``[n\baselineskip]``.
+    """
     def sub(m):
         c = m.group()
         if c in CHAR_ESCAPE:
