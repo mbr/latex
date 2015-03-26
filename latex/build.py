@@ -67,6 +67,7 @@ def build_pdf(source,
                 '-interaction=batchmode',
                 '-halt-on-error',
                 '-no-shell-escape',
+                '-file-line-error',
                 input_fn]
 
         # create environment
