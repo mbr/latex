@@ -6,6 +6,14 @@ from tempdir import TempDir
 
 
 class LaTeXError(Exception):
+    """LaTeX call exception."""
+
+    #: Contents of the log-file that was generated (if any).
+    log = None
+
+    #: The :class:`subprocess.CalledProcessError` that was thrown originally.
+    call_exc = None
+
     def __str__(self):
         return str(self.log)
 
