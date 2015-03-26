@@ -12,7 +12,7 @@ def read(fname):
 
 setup(
     name='latex',
-    version='0.1dev',
+    version='0.4.dev1',
     description='Wrappers for calling LaTeX/building LaTeX documents.',
     long_description=read('README.rst'),
     author='Marc Brinkmann',
