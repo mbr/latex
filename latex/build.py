@@ -57,7 +57,7 @@ def build_pdf(source,
             )
 
             # check aux-file
-            aux = file(aux_fn, 'rb').read()
+            aux = open(aux_fn, 'rb').read()
 
             if aux == prev_aux:
                 break

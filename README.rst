@@ -25,8 +25,8 @@ Allows calling LaTeX from Python without leaving a mess. Similar to the
 Also comes with support for using `Jinja2 <http://jinja.pocoo.org/>`_ templates
 to generate LaTeX files.
 
-:py:func:`~latex.jinja2.make_env` can be used to create an
-:py:class:`~jinja2.Environment` that plays well with LaTex::
+``make_env`` can be used to create an ``Environment`` that plays well with
+LaTex::
 
    Variables can be used in a LaTeX friendly way: Hello, \VAR{name|e}.
 
