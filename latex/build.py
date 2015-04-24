@@ -2,6 +2,9 @@ import os
 import subprocess
 import tempfile
 
+from data import Data as I
+from data.decorators import data
+
 from tempdir import TempDir
 
 
@@ -29,10 +32,7 @@ class LaTeXError(Exception):
         return err
 
 
-def build_pdf(source,
-              latex_cmd='pdflatex',
-              texinputs=[''],
-              max_runs=15):
+def build_pdf_old(source, latex_cmd='pdflatex', texinputs=[''], max_runs=15):
     """Generates a PDF from LaTeX a source, using pdflatex and a temporary
     directory, to avoid leaving behind temporary files.
 
@@ -108,3 +108,74 @@ def build_pdf(source,
 
         # FIXME: http://vim-latex.sourceforge.net/documentation/latex-suite
         #        /compiling-multiple.html
+
+
+class LatexMkBuilder(object):
+    def __init__(self, latexmk='latexmk'):
+        self.latexmk = latexmk
+
+
+class PdfLatexBuilder(object):
+    def __init__(self, pdflatex='pdflatex', max_runs=15):
+        self.pdflatex = pdflatex
+        self.max_runs = 15
+
+    @data('source')
+    def build_pdf(self, source, texinputs=[]):
+        with TempDir() as tmpdir,\
+                source.temp_saved(suffix='.latex', dir=tmpdir) as tmp:
+
+            # calculate output filename
+            base_fn = os.path.splitext(tmp.name)[0]
+            output_fn = base_fn + '.pdf'
+            aux_fn = base_fn + '.aux'
+            args = [self.pdflatex,
+                    '-interaction=batchmode',
+                    '-halt-on-error',
+                    '-no-shell-escape',
+                    '-file-line-error',
+                    tmp.name]
+
+            # create environment
+            newenv = os.environ.copy()
+            newenv['TEXINPUTS'] = os.pathsep.join(texinputs) + os.pathsep
+
+            # run until aux file settles
+            prev_aux = None
+            runs_left = self.max_runs
+            while runs_left:
+                try:
+                    subprocess.check_call(
+                        args,
+                        cwd=tmpdir,
+                        env=newenv,
+                        stdin=open(os.devnull, 'r'),
+                        stdout=open(os.devnull, 'w'),
+                    )
+                except subprocess.CalledProcessError as e:
+                    raise LaTeXError.from_proc_error(e, base_fn + '.log')
+
+                # check aux-file
+                aux = open(aux_fn, 'rb').read()
+
+                if aux == prev_aux:
+                    break
+
+                prev_aux = aux
+                runs_left -= 1
+            else:
+                raise RuntimeError(
+                    'Maximum number of runs ({}) without a stable .aux file '
+                    'reached.'.format(self.max_runs)
+                )
+
+            # by opening the file, a handle will be kept open, even though the
+            # tempdir gets removed. upon garbage collection, it will disappear,
+            # unless the caller used it somehow
+            return I(file=open(output_fn, 'r'), encoding=None)
+
+
+def build_pdf(source):
+    builder = PdfLatexBuilder()
+
+    return builder.build_pdf(source)
