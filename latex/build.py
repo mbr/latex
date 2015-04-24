@@ -4,7 +4,7 @@ import tempfile
 
 from data import Data as I
 from data.decorators import data
-
+from six.moves import shlex_quote
 from tempdir import TempDir
 
 
@@ -83,6 +83,7 @@ def build_pdf_old(source, latex_cmd='pdflatex', texinputs=[''], max_runs=15):
                     env=newenv,
                     stdin=open(os.devnull, 'r'),
                     stdout=open(os.devnull, 'w'),
+                    stderr=open(os.devnull, 'w'),
                 )
             except subprocess.CalledProcessError as e:
                 raise LaTeXError.from_proc_error(e, base_fn + '.log')
@@ -111,8 +112,50 @@ def build_pdf_old(source, latex_cmd='pdflatex', texinputs=[''], max_runs=15):
 
 
 class LatexMkBuilder(object):
-    def __init__(self, latexmk='latexmk'):
+    def __init__(self, latexmk='latexmk', pdflatex='pdflatex'):
         self.latexmk = latexmk
+        self.pdflatex = pdflatex
+
+    @data('source')
+    def build_pdf(self, source, texinputs=[]):
+        with TempDir() as tmpdir,\
+                source.temp_saved(suffix='.latex', dir=tmpdir) as tmp:
+
+            base_fn = os.path.splitext(tmp.name)[0]
+            output_fn = base_fn + '.pdf'
+
+            latex_cmd = [shlex_quote(self.pdflatex),
+                         '-interaction=batchmode',
+                         '-halt-on-error',
+                         '-no-shell-escape',
+                         '-file-line-error',
+                         '%O',
+                         '%S',
+                         ]
+
+            args = [self.latexmk,
+                    '-pdf',
+                    '-pdflatex={}'.format(' '.join(latex_cmd)),
+                    tmp.name,
+                    ]
+
+            # create environment
+            newenv = os.environ.copy()
+            newenv['TEXINPUTS'] = os.pathsep.join(texinputs) + os.pathsep
+
+            try:
+                subprocess.check_call(
+                    args,
+                    cwd=tmpdir,
+                    env=newenv,
+                    stdin=open(os.devnull, 'r'),
+                    stdout=open(os.devnull, 'w'),
+                    stderr=open(os.devnull, 'w'),
+                )
+            except subprocess.CalledProcessError as e:
+                raise LaTeXError.from_proc_error(e, base_fn + '.log')
+
+            return I(open(output_fn, 'rb'), encoding=None)
 
 
 class PdfLatexBuilder(object):
@@ -172,10 +215,10 @@ class PdfLatexBuilder(object):
             # by opening the file, a handle will be kept open, even though the
             # tempdir gets removed. upon garbage collection, it will disappear,
             # unless the caller used it somehow
-            return I(file=open(output_fn, 'r'), encoding=None)
+            return I(open(output_fn, 'r'), encoding=None)
 
 
 def build_pdf(source):
-    builder = PdfLatexBuilder()
+    builder = LatexMkBuilder()
 
     return builder.build_pdf(source)
