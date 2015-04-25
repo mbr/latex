@@ -20,7 +20,7 @@ Allows calling LaTeX from Python without leaving a mess. Similar to the
      pdf = build_pdf(min_latex)
 
      # look at the first few bytes of the header
-     print pdf[:10]
+     print str(pdf)[:10]
 
 Also comes with support for using `Jinja2 <http://jinja.pocoo.org/>`_ templates
 to generate LaTeX files.
