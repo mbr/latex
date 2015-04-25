@@ -4,6 +4,7 @@ import subprocess
 from future.utils import raise_from
 from data import Data as I
 from data.decorators import data
+from shutilwhich import which
 from six.moves import shlex_quote
 from tempdir import TempDir
 
@@ -71,6 +72,9 @@ class LatexMkBuilder(LatexBuilder):
 
             return I(open(output_fn, 'rb'), encoding=None)
 
+    def is_available(self):
+        return bool(which(self.pdflatex)) and bool(which(self.latexmk))
+
 
 class PdfLatexBuilder(LatexBuilder):
     def __init__(self, pdflatex='pdflatex', max_runs=15):
@@ -130,6 +134,9 @@ class PdfLatexBuilder(LatexBuilder):
             # tempdir gets removed. upon garbage collection, it will disappear,
             # unless the caller used it somehow
             return I(open(output_fn, 'r'), encoding=None)
+
+    def is_available(self):
+        return bool(which(self.pdflatex))
 
 
 def build_pdf(source, texinputs=[]):
