@@ -178,7 +178,27 @@ class PdfLatexBuilder(LatexBuilder):
         return bool(which(self.pdflatex))
 
 
-def build_pdf(source, texinputs=[]):
-    builder = LatexMkBuilder()
+PREFERRED_BUILDERS = [
+    LatexMkBuilder,
+    PdfLatexBuilder,
+]
 
-    return builder.build_pdf(source, texinputs)
+
+def build_pdf(source, texinputs=[]):
+    """Builds a LaTeX source to PDF.
+
+    Will automatically instantiate an available builder (or raise a
+    :class:`RuntimeError` if none are available) and build the supplied source
+    with it.
+
+    Parameters are passed on to the builder's
+    :method:`~latex.build.LatexBuilder.build_pdf` function.
+    """
+    for bld_cls in PREFERRED_BUILDERS:
+        builder = bld_cls()
+        if not builder.is_available():
+            continue
+        return builder.build_pdf(source, texinputs)
+    else:
+        raise RuntimeError('No available builder could be instantiated. '
+                           'Please make sure LaTeX is installed.')
