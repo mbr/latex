@@ -12,6 +12,8 @@ from .exc import LatexBuildError
 
 
 class LatexBuilder(object):
+    """Base class for Latex builders."""
+
     def build_pdf(self, source, texinputs=[]):
         """Generates a PDF from LaTeX a source.
 
@@ -192,7 +194,7 @@ def build_pdf(source, texinputs=[]):
     with it.
 
     Parameters are passed on to the builder's
-    :method:`~latex.build.LatexBuilder.build_pdf` function.
+    :meth:`~latex.build.LatexBuilder.build_pdf` function.
     """
     for bld_cls in PREFERRED_BUILDERS:
         builder = bld_cls()
