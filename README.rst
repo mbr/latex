@@ -14,7 +14,7 @@ Allows calling LaTeX from Python without leaving a mess. Similar to the
                   r"Hello, world!"
                   r"\end{document}")
 
-     from latex.build import build_pdf
+     from latex import build_pdf
 
      # this builds a pdf-file inside a temporary directory
      pdf = build_pdf(min_latex)
