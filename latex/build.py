@@ -26,7 +26,7 @@ class LatexBuilder(object):
         raise NotImplementedError
 
     def is_available(self):
-        """Checks if the builder is available.
+        """Checks if builder is available.
 
         Builders that depend on external programs like ``latexmk`` can check
         if these are found on the path or make sure other prerequisites are
@@ -37,6 +37,21 @@ class LatexBuilder(object):
 
 
 class LatexMkBuilder(LatexBuilder):
+    """A latexmk based builder for LaTeX files.
+
+    Uses the `latexmk
+    <http://users.phys.psu.edu/~collins/software/latexmk-jcc/>`_ script to
+    build latex files, which is part of some popular LaTeX distributions like
+    `texlive <https://www.tug.org/texlive/>`_.
+
+    The build process consists of copying the source file to a temporary
+    directory and running latexmk on it, which will take care of reruns.
+
+    :param latexmk: The path to the ``latexmk`` binary (will looked up on
+                    ``$PATH``).
+    :param pdflatex: The path to the ``pdflatex`` binary (will looked up on
+                    ``$PATH``).
+    """
     def __init__(self, latexmk='latexmk', pdflatex='pdflatex'):
         self.latexmk = latexmk
         self.pdflatex = pdflatex
@@ -87,6 +102,20 @@ class LatexMkBuilder(LatexBuilder):
 
 
 class PdfLatexBuilder(LatexBuilder):
+    """A simple pdflatex based buidler for LaTeX files.
+
+    Builds LaTeX files by copying them to a temporary directly and running
+    ``pdflatex`` until the associated ``.aux`` file stops changing.
+
+    .. note:: This may miss changes if ``biblatex`` or other additional tools
+              are used. Usually, the :class:`~latex.build.LatexMkBuilder` will
+              give more reliable results.
+
+    :param pdflatex: The path to the ``pdflatex`` binary (will looked up on
+                    ``$PATH``).
+    :param max_runs: An integer providing an upper limit on the amount of times
+                     ``pdflatex`` can be rerun before an exception is thrown.
+    """
     def __init__(self, pdflatex='pdflatex', max_runs=15):
         self.pdflatex = pdflatex
         self.max_runs = 15
