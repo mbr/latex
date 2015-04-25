@@ -12,17 +12,27 @@ from .exc import LatexBuildError
 
 
 class LatexBuilder(object):
-    """Generates a PDF from LaTeX a source.
-
-    If there are errors generating a :class:`~latex.build.LaTeXError` is
-    raised.
-
-    :param source: The LaTeX source.
-    :param texinputs: Include paths for TeX. An empty string causes the default
-                      path to be added (see the tex manpage).
-    :returns: A :class:`~data.Data` instance containing the generated PDF.
-    """
     def build_pdf(self, source, texinputs=[]):
+        """Generates a PDF from LaTeX a source.
+
+        If there are errors generating a :class:`~latex.build.LaTeXError` is
+        raised.
+
+        :param source: The LaTeX source.
+        :param texinputs: Include paths for TeX. An empty string causes the
+                          default path to be added (see the tex manpage).
+        :returns: A :class:`~data.Data` instance containing the generated PDF.
+        """
+        raise NotImplementedError
+
+    def is_available(self):
+        """Checks if the builder is available.
+
+        Builders that depend on external programs like ``latexmk`` can check
+        if these are found on the path or make sure other prerequisites are
+        met.
+
+        :return: A boolean indicating availability."""
         raise NotImplementedError
 
 
