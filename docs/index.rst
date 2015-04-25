@@ -6,8 +6,10 @@ API
 
 .. autofunction:: latex.escape
 
-.. autofunction:: latex.build.build_pdf
-.. autoclass:: latex.build.LaTeXError
+.. automodule:: latex.build
    :members:
 
 .. autofunction:: latex.jinja2.make_env
+
+.. automodule:: latex.exc
+   :members:
