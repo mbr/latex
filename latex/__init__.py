@@ -1,5 +1,8 @@
 import re
 
+from .build import build_pdf
+
+
 CHAR_ESCAPE = {
     u'&': u'\\&',
     u'%': u'\\%',

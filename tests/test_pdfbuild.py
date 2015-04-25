@@ -1,4 +1,4 @@
-from latex.build import build_pdf
+from latex import build_pdf
 
 
 def test_generates_something():
