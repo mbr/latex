@@ -1,3 +1,6 @@
+import os
+
+
 class LatexError(Exception):
     pass
 
