@@ -10,4 +10,4 @@ def test_run_example():
     pdf = build_pdf(min_latex)
 
     # look at the first few bytes of the header
-    print (str(pdf)[:10])
+    print(bytes(pdf)[:10])
