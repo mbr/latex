@@ -17,8 +17,7 @@ class LatexBuilder(object):
     def build_pdf(self, source, texinputs=[]):
         """Generates a PDF from LaTeX a source.
 
-        If there are errors generating a :class:`~latex.build.LaTeXError` is
-        raised.
+        If there are errors generating a ``LatexError`` is raised.
 
         :param source: The LaTeX source.
         :param texinputs: Include paths for TeX. An empty string causes the
@@ -190,8 +189,8 @@ def build_pdf(source, texinputs=[]):
     """Builds a LaTeX source to PDF.
 
     Will automatically instantiate an available builder (or raise a
-    :class:`RuntimeError` if none are available) and build the supplied source
-    with it.
+    :class:`exceptions.RuntimeError` if none are available) and build the
+    supplied source with it.
 
     Parameters are passed on to the builder's
     :meth:`~latex.build.LatexBuilder.build_pdf` function.
