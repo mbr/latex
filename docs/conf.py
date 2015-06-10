@@ -245,4 +245,5 @@ texinfo_documents = [
 
 # Example configuration for intersphinx: refer to the Python standard library.
 intersphinx_mapping = {'http://docs.python.org/': None,
-                       'http://jinja.pocoo.org/docs/': None}
+                       'http://jinja.pocoo.org/docs/': None,
+                       'http://pythonhosted.org/data': None}
