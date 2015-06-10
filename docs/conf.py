@@ -91,12 +91,7 @@ pygments_style = 'sphinx'
 
 # The theme to use for HTML and HTML Help pages.  See the documentation for
 # a list of builtin themes.
-html_theme = 'default'
-
-import sphinx_readable_theme
-
-html_theme_path = [sphinx_readable_theme.get_html_theme_path()]
-html_theme = 'readable'
+html_theme = 'alabaster'
 
 
 # Theme options are theme-specific and customize the look and feel of a theme
