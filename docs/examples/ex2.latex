@@ -1,0 +1,10 @@
+\documentclass{article}
+\begin{document}
+
+\section{Greetings, {\VAR{name}}!}
+It is great to see you.
+%- if name == "Alice"
+Especially you, Alice!
+%- endif
+
+\end{document}
