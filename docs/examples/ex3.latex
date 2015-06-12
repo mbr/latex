@@ -1,0 +1,6 @@
+\documentclass{article}
+\usepackage{ex3}
+
+\begin{document}
+This is \important{very} important.
+\end{document}
