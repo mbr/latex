@@ -1,5 +1,6 @@
 import os
 import subprocess
+from subprocess import CalledProcessError
 
 from future.utils import raise_from
 from data import Data as I
@@ -93,7 +94,7 @@ class LatexMkBuilder(LatexBuilder):
                     stdout=open(os.devnull, 'w'),
                     stderr=open(os.devnull, 'w'),
                 )
-            except subprocess.CalledProcessError as e:
+            except CalledProcessError as e:
                 raise_from(LatexBuildError(base_fn + '.log'), e)
 
             return I(open(output_fn, 'rb'), encoding=None)
@@ -153,7 +154,7 @@ class PdfLatexBuilder(LatexBuilder):
                         stdin=open(os.devnull, 'r'),
                         stdout=open(os.devnull, 'w'),
                     )
-                except subprocess.CalledProcessError as e:
+                except CalledProcessError as e:
                     raise_from(LatexBuildError(base_fn + '.log'), e)
 
                 # check aux-file
