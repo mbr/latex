@@ -1,5 +1,5 @@
-pyLaTeX
-=======
+latex
+=====
 
 Documentation can be found at https://pythonhosted.org/latex .
 
