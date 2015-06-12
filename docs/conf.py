@@ -12,6 +12,7 @@
 # serve to show the default.
 
 import sys, os
+from collections import OrderedDict
 
 # If extensions (or modules to document with autodoc) are in another directory,
 # add these directories to sys.path here. If the directory is relative to the
@@ -93,14 +94,21 @@ pygments_style = 'sphinx'
 # a list of builtin themes.
 html_theme = 'alabaster'
 
-
 # Theme options are theme-specific and customize the look and feel of a theme
 # further.  For a list of options available for each theme, see the
 # documentation.
-#html_theme_options = {}
+html_theme_options = {
+    'github_user': 'mbr',
+    'github_repo': 'latex',
+    'github_button': 'false',
+    'extra_nav_links': OrderedDict([
+        ('latex @ PyPI', 'https://pypi.python.org/pypi/latex'),
+        ('latex @ github', 'https://github.com/mbr/latex'),
+        ('Issue Tracker', 'https://github.com/mbr/latex/issues'),
+    ])
+}
 
 # Add any paths that contain custom themes here, relative to this directory.
-#html_theme_path = []
 
 # The name for this set of Sphinx documents.  If None, it defaults to
 # "<project> v<release> documentation".
@@ -132,7 +140,15 @@ html_theme = 'alabaster'
 #html_use_smartypants = True
 
 # Custom sidebar templates, maps document names to template names.
-#html_sidebars = {}
+html_sidebars = {
+    '**': [
+        'about.html',
+        'navigation.html',
+#        'relations.html',
+#        'searchbox.html',
+        'donate.html',
+    ]
+}
 
 # Additional templates that should be rendered to pages, maps page names to
 # template names.
