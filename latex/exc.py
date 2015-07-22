@@ -1,5 +1,7 @@
 import os
 
+from .errors import parse_log
+
 
 class LatexError(Exception):
     pass
@@ -16,3 +18,11 @@ class LatexBuildError(LatexError):
 
     def __str__(self):
         return str(self.log)
+
+    def get_errors(self):
+        """Parse the log for errors.
+
+        :return: The return of :func:`.parse_log`, applied to the log
+                 associated with this build error.
+        """
+        return parse_log(self.log)
