@@ -1,6 +1,6 @@
 import re
 
-LATEX_ERR_RE = re.compile(r'(?P<filename>[^:]+):(?P<line>[0-9]*):'
+LATEX_ERR_RE = re.compile(r'(?P<filename>[^:]+):(?P<line>[0-9]+):'
                           r'\s*(?P<error>.*)')
 
 
