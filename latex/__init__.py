@@ -1,5 +1,6 @@
 import re
 
+from .exc import LatexBuildError
 from .build import build_pdf
 
 
