@@ -1,0 +1,6 @@
+Error in /tmp/tmpm9bfc0/tmpr50TJG.latex, line 3: Undefined control sequence.
+    l.3 \THISCONTROLSEQUENCEDOESNOTEXIT
+
+Error in /tmp/tmpm9bfc0/tmpr50TJG.latex, line 3: ==> Fatal error occurred, no output PDF file
+     produced!
+

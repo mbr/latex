@@ -43,6 +43,20 @@ using the ``TEXINPUTS`` [1]_ environment variable:
 .. [1] See ``man 1 tex``, the ``TEXINPUTS`` section.
 
 
+Error formatting
+----------------
+
+LaTeX errors can be quite cryptic and hard to find in a sea of log messages, to
+alleviate this, ``latex`` offers some basic log parsing functions:
+
+.. literalinclude:: examples/ex4.py
+   :caption: ex4.py
+
+The resulting output:
+
+.. literalinclude:: examples/ex4.txt
+
+
 API
 ===
 
