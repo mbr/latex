@@ -5,7 +5,7 @@ LATEX_ERR_RE = re.compile(r'(?P<filename>[^:]+):(?P<line>[0-9]*):'
 
 
 def parse_log(log, context_size=3):
-    lines = log.split('\n')
+    lines = log.splitlines()
     errors = []
 
     for n, line in enumerate(lines):
