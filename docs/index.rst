@@ -55,3 +55,6 @@ API
 
 .. automodule:: latex.exc
    :members:
+
+.. automodule:: latex.errors
+   :members:
