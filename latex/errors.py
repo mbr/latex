@@ -25,7 +25,10 @@ def parse_log(log, context_size=3):
         if m:
             err = m.groupdict().copy()
             err['context'] = lines[n:n+context_size]
-            err['line'] = int(err['line'])
+            try:
+                err['line'] = int(err['line'])
+            except TypeError:
+                pass  # ignore invalid int conversion
             errors.append(err)
 
     return errors
