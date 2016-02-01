@@ -44,3 +44,37 @@ LaTex::
    %- if weather is good
    Yay.
    %- endif
+
+
+Example use
+-----------
+
+.. code-block:: python
+
+    from jinja2.loaders import FileSystemLoader
+    from latex.jinja2 import make_env
+
+    env = make_env(loader=FileSystemLoader('.'))
+    tpl = env.get_template('doc.latex')
+
+    print(tpl.render(name="Alice"))
+
+The ``base.latex`` demonstrates how ``\BLOCK{...}`` is substituted for
+``{% ... %}``:
+
+.. code-block:: latex
+
+    \documentclass{article}
+    \begin{document}
+    \BLOCK{block body}\BLOCK{endblock}
+    \end{document}
+
+Finally, ``doc.latex`` shows why the ``%-`` syntax is usually preferable:
+
+.. code-block:: latex
+
+    %- extends "base.latex"
+
+    %- block body
+    Hello, \VAR{name|e}.
+    %- endblock
