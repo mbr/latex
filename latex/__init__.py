@@ -20,7 +20,7 @@ CHAR_ESCAPE = {
     u'<': u'\\textless{}',
     u'>': u'\\textgreater{}',
     u'|': u'\\textbar{}',
-    u'"': u'\\textquoteddbl{}',
+    u'"': u'\\textquotedbl{}',
 }
 
 
