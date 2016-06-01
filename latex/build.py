@@ -63,6 +63,9 @@ class LatexMkBuilder(LatexBuilder):
         with TempDir() as tmpdir,\
                 source.temp_saved(suffix='.latex', dir=tmpdir) as tmp:
 
+            # close temp file, so other processes can access it also on Windows
+            tmp.close()
+
             base_fn = os.path.splitext(tmp.name)[0]
             output_fn = base_fn + '.pdf'
 
@@ -126,6 +129,9 @@ class PdfLatexBuilder(LatexBuilder):
     def build_pdf(self, source, texinputs=[]):
         with TempDir() as tmpdir,\
                 source.temp_saved(suffix='.latex', dir=tmpdir) as tmp:
+
+            # close temp file, so other processes can access it also on Windows
+            tmp.close()
 
             # calculate output filename
             base_fn = os.path.splitext(tmp.name)[0]
