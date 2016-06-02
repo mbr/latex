@@ -63,6 +63,9 @@ class LatexMkBuilder(LatexBuilder):
         with TempDir() as tmpdir,\
                 source.temp_saved(suffix='.latex', dir=tmpdir) as tmp:
 
+            # close temp file, so other processes can access it also on Windows
+            tmp.close()
+
             base_fn = os.path.splitext(tmp.name)[0]
             output_fn = base_fn + '.pdf'
 
@@ -97,7 +100,7 @@ class LatexMkBuilder(LatexBuilder):
             except CalledProcessError as e:
                 raise_from(LatexBuildError(base_fn + '.log'), e)
 
-            return I(open(output_fn, 'rb'), encoding=None)
+            return I(open(output_fn, 'rb').read(), encoding=None)
 
     def is_available(self):
         return bool(which(self.pdflatex)) and bool(which(self.latexmk))
@@ -126,6 +129,9 @@ class PdfLatexBuilder(LatexBuilder):
     def build_pdf(self, source, texinputs=[]):
         with TempDir() as tmpdir,\
                 source.temp_saved(suffix='.latex', dir=tmpdir) as tmp:
+
+            # close temp file, so other processes can access it also on Windows
+            tmp.close()
 
             # calculate output filename
             base_fn = os.path.splitext(tmp.name)[0]
@@ -171,10 +177,7 @@ class PdfLatexBuilder(LatexBuilder):
                     'reached.'.format(self.max_runs)
                 )
 
-            # by opening the file, a handle will be kept open, even though the
-            # tempdir gets removed. upon garbage collection, it will disappear,
-            # unless the caller used it somehow
-            return I(open(output_fn, 'rb'), encoding=None)
+            return I(open(output_fn, 'rb').read(), encoding=None)
 
     def is_available(self):
         return bool(which(self.pdflatex))
