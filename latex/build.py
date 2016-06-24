@@ -59,7 +59,7 @@ class LatexMkBuilder(LatexBuilder):
         self.pdflatex = pdflatex
 
     @data('source')
-    def build_pdf(self, source, texinputs=[]):
+    def build_pdf(self, source, texinputs=[], **kwargs):
         with TempDir() as tmpdir,\
                 source.temp_saved(suffix='.latex', dir=tmpdir) as tmp:
 
@@ -72,7 +72,7 @@ class LatexMkBuilder(LatexBuilder):
             latex_cmd = [shlex_quote(self.pdflatex),
                          '-interaction=batchmode',
                          '-halt-on-error',
-                         '-no-shell-escape',
+                         '-shell-escape' if kwargs.get('allow_shell_escape') else '-no-shell-escape',
                          '-file-line-error',
                          '%O',
                          '%S',
@@ -126,7 +126,7 @@ class PdfLatexBuilder(LatexBuilder):
         self.max_runs = 15
 
     @data('source')
-    def build_pdf(self, source, texinputs=[]):
+    def build_pdf(self, source, texinputs=[], **kwargs):
         with TempDir() as tmpdir,\
                 source.temp_saved(suffix='.latex', dir=tmpdir) as tmp:
 
@@ -140,7 +140,7 @@ class PdfLatexBuilder(LatexBuilder):
             args = [self.pdflatex,
                     '-interaction=batchmode',
                     '-halt-on-error',
-                    '-no-shell-escape',
+                    '-shell-escape' if kwargs.get('allow_shell_escape') else '-no-shell-escape',
                     '-file-line-error',
                     tmp.name]
 
@@ -189,7 +189,7 @@ PREFERRED_BUILDERS = [
 ]
 
 
-def build_pdf(source, texinputs=[]):
+def build_pdf(source, texinputs=[], **kwargs):
     """Builds a LaTeX source to PDF.
 
     Will automatically instantiate an available builder (or raise a
@@ -203,7 +203,7 @@ def build_pdf(source, texinputs=[]):
         builder = bld_cls()
         if not builder.is_available():
             continue
-        return builder.build_pdf(source, texinputs)
+        return builder.build_pdf(source, texinputs, **kwargs)
     else:
         raise RuntimeError('No available builder could be instantiated. '
                            'Please make sure LaTeX is installed.')
