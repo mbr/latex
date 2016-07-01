@@ -3,7 +3,6 @@ import re
 from .exc import LatexBuildError
 from .build import build_pdf
 
-
 CHAR_ESCAPE = {
     u'&': u'\\&',
     u'%': u'\\%',
@@ -40,6 +39,7 @@ def escape(s, fold_newlines=True):
                           single ``\\``. Otherwise, whitespace is kept intact
                           by adding multiple ``[n\baselineskip]``.
     """
+
     def sub(m):
         c = m.group()
         if c in CHAR_ESCAPE:
