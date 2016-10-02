@@ -54,6 +54,7 @@ class LatexMkBuilder(LatexBuilder):
     :param pdflatex: The path to the ``pdflatex`` binary (will looked up on
                     ``$PATH``).
     """
+
     def __init__(self, latexmk='latexmk', pdflatex='pdflatex'):
         self.latexmk = latexmk
         self.pdflatex = pdflatex
@@ -75,28 +76,24 @@ class LatexMkBuilder(LatexBuilder):
                          '-no-shell-escape',
                          '-file-line-error',
                          '%O',
-                         '%S',
-                         ]
+                         '%S', ]
 
             args = [self.latexmk,
                     '-pdf',
                     '-pdflatex={}'.format(' '.join(latex_cmd)),
-                    tmp.name,
-                    ]
+                    tmp.name, ]
 
             # create environment
             newenv = os.environ.copy()
             newenv['TEXINPUTS'] = os.pathsep.join(texinputs) + os.pathsep
 
             try:
-                subprocess.check_call(
-                    args,
-                    cwd=tmpdir,
-                    env=newenv,
-                    stdin=open(os.devnull, 'r'),
-                    stdout=open(os.devnull, 'w'),
-                    stderr=open(os.devnull, 'w'),
-                )
+                subprocess.check_call(args,
+                                      cwd=tmpdir,
+                                      env=newenv,
+                                      stdin=open(os.devnull, 'r'),
+                                      stdout=open(os.devnull, 'w'),
+                                      stderr=open(os.devnull, 'w'), )
             except CalledProcessError as e:
                 raise_from(LatexBuildError(base_fn + '.log'), e)
 
@@ -121,6 +118,7 @@ class PdfLatexBuilder(LatexBuilder):
     :param max_runs: An integer providing an upper limit on the amount of times
                      ``pdflatex`` can be rerun before an exception is thrown.
     """
+
     def __init__(self, pdflatex='pdflatex', max_runs=15):
         self.pdflatex = pdflatex
         self.max_runs = 15
@@ -137,12 +135,8 @@ class PdfLatexBuilder(LatexBuilder):
             base_fn = os.path.splitext(tmp.name)[0]
             output_fn = base_fn + '.pdf'
             aux_fn = base_fn + '.aux'
-            args = [self.pdflatex,
-                    '-interaction=batchmode',
-                    '-halt-on-error',
-                    '-no-shell-escape',
-                    '-file-line-error',
-                    tmp.name]
+            args = [self.pdflatex, '-interaction=batchmode', '-halt-on-error',
+                    '-no-shell-escape', '-file-line-error', tmp.name]
 
             # create environment
             newenv = os.environ.copy()
@@ -153,13 +147,11 @@ class PdfLatexBuilder(LatexBuilder):
             runs_left = self.max_runs
             while runs_left:
                 try:
-                    subprocess.check_call(
-                        args,
-                        cwd=tmpdir,
-                        env=newenv,
-                        stdin=open(os.devnull, 'r'),
-                        stdout=open(os.devnull, 'w'),
-                    )
+                    subprocess.check_call(args,
+                                          cwd=tmpdir,
+                                          env=newenv,
+                                          stdin=open(os.devnull, 'r'),
+                                          stdout=open(os.devnull, 'w'), )
                 except CalledProcessError as e:
                     raise_from(LatexBuildError(base_fn + '.log'), e)
 
@@ -174,8 +166,7 @@ class PdfLatexBuilder(LatexBuilder):
             else:
                 raise RuntimeError(
                     'Maximum number of runs ({}) without a stable .aux file '
-                    'reached.'.format(self.max_runs)
-                )
+                    'reached.'.format(self.max_runs))
 
             return I(open(output_fn, 'rb').read(), encoding=None)
 
@@ -183,10 +174,7 @@ class PdfLatexBuilder(LatexBuilder):
         return bool(which(self.pdflatex))
 
 
-PREFERRED_BUILDERS = [
-    LatexMkBuilder,
-    PdfLatexBuilder,
-]
+PREFERRED_BUILDERS = [LatexMkBuilder, PdfLatexBuilder, ]
 
 
 def build_pdf(source, texinputs=[]):

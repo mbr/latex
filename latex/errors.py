@@ -24,7 +24,7 @@ def parse_log(log, context_size=3):
         m = LATEX_ERR_RE.match(line)
         if m:
             err = m.groupdict().copy()
-            err['context'] = lines[n:n+context_size]
+            err['context'] = lines[n:n + context_size]
             try:
                 err['line'] = int(err['line'])
             except TypeError:
