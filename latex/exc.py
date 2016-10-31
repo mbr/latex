@@ -12,7 +12,11 @@ class LatexBuildError(LatexError):
 
     def __init__(self, logfn=None):
         if os.path.exists(logfn):
-            self.log = open(logfn).read()
+            # the binary log is probably latin1 or utf8?
+            # utf8 throws errors occasionally, so we try with latin1
+            # and ignore invalid chars
+            binlog = open(logfn, 'rb').read()
+            self.log = binlog.decode('latin1', 'ignore')
         else:
             self.log = None
 
