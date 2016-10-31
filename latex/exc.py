@@ -10,13 +10,15 @@ class LatexError(Exception):
 class LatexBuildError(LatexError):
     """LaTeX call exception."""
 
+    # the binary log is probably latin1 or utf8?
+    # utf8 throws errors occasionally, so we try with latin1
+    # and ignore invalid chars
+    LATEX_MESSAGE_ENCODING = 'latin1'
+
     def __init__(self, logfn=None):
         if os.path.exists(logfn):
-            # the binary log is probably latin1 or utf8?
-            # utf8 throws errors occasionally, so we try with latin1
-            # and ignore invalid chars
             binlog = open(logfn, 'rb').read()
-            self.log = binlog.decode('latin1', 'ignore')
+            self.log = binlog.decode(self.LATEX_MESSAGE_ENCODING, 'ignore')
         else:
             self.log = None
 
