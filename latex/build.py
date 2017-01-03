@@ -174,10 +174,15 @@ class PdfLatexBuilder(LatexBuilder):
         return bool(which(self.pdflatex))
 
 
-PREFERRED_BUILDERS = [LatexMkBuilder, PdfLatexBuilder, ]
+BUILDERS = {
+    'latexmk': LatexMkBuilder,
+    'pdflatex': PdfLatexBuilder,
+}
+
+PREFERRED_BUILDERS = ('latexmk', 'pdflatex', )
 
 
-def build_pdf(source, texinputs=[]):
+def build_pdf(source, texinputs=[], builder=None):
     """Builds a LaTeX source to PDF.
 
     Will automatically instantiate an available builder (or raise a
@@ -186,8 +191,18 @@ def build_pdf(source, texinputs=[]):
 
     Parameters are passed on to the builder's
     :meth:`~latex.build.LatexBuilder.build_pdf` function.
+    
+    :param builder: Specify which builder should be used - ``latexmk`` or ``pdflatex``.
     """
-    for bld_cls in PREFERRED_BUILDERS:
+    if builder is None:
+        builders = PREFERRED_BUILDERS
+    elif builder not in BUILDERS:
+        raise RuntimeError('Invalid Builder specified')
+    else:
+        builders = (builder, )
+    
+    for bld in builders:
+        bld_cls = BUILDERS[bld]
         builder = bld_cls()
         if not builder.is_available():
             continue
