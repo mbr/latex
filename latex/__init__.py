@@ -20,6 +20,7 @@ CHAR_ESCAPE = {
     u'>': u'\\textgreater{}',
     u'|': u'\\textbar{}',
     u'"': u'\\textquotedbl{}',
+    u'°': u'$\\deg$',
 }
 
 
