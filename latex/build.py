@@ -212,7 +212,7 @@ def build_pdf(source, texinputs=[], builder=None):
 
     Parameters are passed on to the builder's
     :meth:`~latex.build.LatexBuilder.build_pdf` function.
-    
+
     :param builder: Specify which builder should be used - ``latexmk`` or ``pdflatex``.
     """
     if builder is None:
@@ -221,7 +221,7 @@ def build_pdf(source, texinputs=[], builder=None):
         raise RuntimeError('Invalid Builder specified')
     else:
         builders = (builder, )
-    
+
     for bld in builders:
         bld_cls = BUILDERS[bld]
         builder = bld_cls()
