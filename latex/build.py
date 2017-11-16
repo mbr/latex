@@ -198,9 +198,10 @@ class PdfLatexBuilder(LatexBuilder):
 BUILDERS = {
     'latexmk': LatexMkBuilder,
     'pdflatex': PdfLatexBuilder,
+    'xelatexmk': lambda: LatexMkBuilder(variant='xelatex'),
 }
 
-PREFERRED_BUILDERS = ('latexmk', 'pdflatex', )
+PREFERRED_BUILDERS = ('latexmk', 'pdflatex', 'xelatexmk')
 
 
 def build_pdf(source, texinputs=[], builder=None):
@@ -213,7 +214,8 @@ def build_pdf(source, texinputs=[], builder=None):
     Parameters are passed on to the builder's
     :meth:`~latex.build.LatexBuilder.build_pdf` function.
 
-    :param builder: Specify which builder should be used - ``latexmk`` or ``pdflatex``.
+    :param builder: Specify which builder should be used - ``latexmk``,
+                    ``pdflatex`` or ``xelatexmk``.
     """
     if builder is None:
         builders = PREFERRED_BUILDERS

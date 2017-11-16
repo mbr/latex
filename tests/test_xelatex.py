@@ -1,9 +1,8 @@
+from latex import build_pdf
 from latex.build import LatexMkBuilder
 
-
-def test_xelatex():
-    # the example below should not compile on pdflatex, but on xelatex
-    min_latex = r"""
+# the example below should not compile on pdflatex, but on xelatex
+min_latex = r"""
 \documentclass[12pt]{article}
 \usepackage{fontspec}
 
@@ -23,7 +22,15 @@ def test_xelatex():
 
 \end{document}
 """
+
+def test_xelatex():
     builder = LatexMkBuilder(variant='xelatex')
     pdf = builder.build_pdf(min_latex)
+
+    assert pdf
+
+
+def test_xelatexmk():
+    pdf = build_pdf(min_latex, builder='xelatexmk')
 
     assert pdf
