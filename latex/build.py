@@ -55,16 +55,16 @@ class LatexMkBuilder(LatexBuilder):
                     ``$PATH``).
     :param xelatex: The path to the ``xelatex`` binary (will be looked up on
                     ``$PATH``).
-    :param latex_variant: The LaTeX variant to use. Valid choices are
-                          `pdflatex` and `xelatex`. Defaults to `pdflatex`.
+    :param variant: The LaTeX variant to use. Valid choices are
+                    `pdflatex` and `xelatex`. Defaults to `pdflatex`.
     """
 
     def __init__(self, latexmk='latexmk', pdflatex='pdflatex',
-                 xelatex='xelatex', latex_variant='pdflatex'):
+                 xelatex='xelatex', variant='pdflatex'):
         self.latexmk = latexmk
         self.pdflatex = pdflatex
         self.xelatex = xelatex
-        self.latex_variant = 'pdflatex'
+        self.variant = 'pdflatex'
 
     @data('source')
     def build_pdf(self, source, texinputs=[]):
@@ -85,18 +85,18 @@ class LatexMkBuilder(LatexBuilder):
                          '%O',
                          '%S', ]
 
-            if self.latex_variant == 'pdflatex':
+            if self.variant == 'pdflatex':
                 args = [self.latexmk,
                         '-pdf',
                         '-pdflatex={}'.format(' '.join(latex_cmd)),
                         tmp.name, ]
-            elif self.latex_variant == 'xelatex':
+            elif self.variant == 'xelatex':
                 args = [self.latexmk,
                         '-xelatex',
                         tmp.name, ]
             else:
                 raise ValueError('Invalid LaTeX variant: {}'.format(
-                    self.latex_variant))
+                    self.variant))
 
             # create environment
             newenv = os.environ.copy()
@@ -118,9 +118,9 @@ class LatexMkBuilder(LatexBuilder):
         if not which(self.latexmk):
             return False
 
-        if self.latex_variant == 'pdflatex':
+        if self.variant == 'pdflatex':
             return bool(which(self.pdflatex))
-        if self.latex_variant == 'xelatex':
+        if self.variant == 'xelatex':
             return bool(which(self.xelatex))
 
 
