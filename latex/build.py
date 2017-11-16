@@ -64,7 +64,7 @@ class LatexMkBuilder(LatexBuilder):
         self.latexmk = latexmk
         self.pdflatex = pdflatex
         self.xelatex = xelatex
-        self.variant = 'pdflatex'
+        self.variant = variant
 
     @data('source')
     def build_pdf(self, source, texinputs=[]):
