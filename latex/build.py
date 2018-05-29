@@ -55,15 +55,18 @@ class LatexMkBuilder(LatexBuilder):
                     ``$PATH``).
     :param xelatex: The path to the ``xelatex`` binary (will be looked up on
                     ``$PATH``).
+    :param lualatex: The path to the ``lualatex`` binary (will be looked up on
+                    ``$PATH``).
     :param variant: The LaTeX variant to use. Valid choices are
-                    `pdflatex` and `xelatex`. Defaults to `pdflatex`.
+                    `pdflatex`, `xelatex` and `lualatex`. Defaults to `pdflatex`.
     """
 
     def __init__(self, latexmk='latexmk', pdflatex='pdflatex',
-                 xelatex='xelatex', variant='pdflatex'):
+                 xelatex='xelatex', lualatex='lualatex', variant='pdflatex'):
         self.latexmk = latexmk
         self.pdflatex = pdflatex
         self.xelatex = xelatex
+        self.lualatex = lualatex
         self.variant = variant
 
     @data('source')
@@ -94,6 +97,10 @@ class LatexMkBuilder(LatexBuilder):
                 args = [self.latexmk,
                         '-xelatex',
                         tmp.name, ]
+            elif self.variant == 'lualatex':
+                args = [self.latexmk,
+                        '-lualatex',
+                        tmp.name]
             else:
                 raise ValueError('Invalid LaTeX variant: {}'.format(
                     self.variant))
@@ -122,6 +129,8 @@ class LatexMkBuilder(LatexBuilder):
             return bool(which(self.pdflatex))
         if self.variant == 'xelatex':
             return bool(which(self.xelatex))
+        if self.variant == 'lualatex':
+            return bool(which(self.lualatex))
 
 
 class PdfLatexBuilder(LatexBuilder):
@@ -199,9 +208,10 @@ BUILDERS = {
     'latexmk': LatexMkBuilder,
     'pdflatex': PdfLatexBuilder,
     'xelatexmk': lambda: LatexMkBuilder(variant='xelatex'),
+    'lualatexmk': lambda: LatexMkBuilder(variant='lualatex'),
 }
 
-PREFERRED_BUILDERS = ('latexmk', 'pdflatex', 'xelatexmk')
+PREFERRED_BUILDERS = ('latexmk', 'pdflatex', 'xelatexmk', 'lualatexmk')
 
 
 def build_pdf(source, texinputs=[], builder=None):
@@ -220,10 +230,9 @@ def build_pdf(source, texinputs=[], builder=None):
     if builder is None:
         builders = PREFERRED_BUILDERS
     elif builder not in BUILDERS:
-        raise RuntimeError('Invalid Builder specified')
+        raise RuntimeError('Invalid Builder specified: {}'.format(builder))
     else:
         builders = (builder, )
-
     for bld in builders:
         bld_cls = BUILDERS[bld]
         builder = bld_cls()
