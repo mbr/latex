@@ -225,7 +225,7 @@ def build_pdf(source, texinputs=[], builder=None):
     :meth:`~latex.build.LatexBuilder.build_pdf` function.
 
     :param builder: Specify which builder should be used - ``latexmk``,
-                    ``pdflatex`` or ``xelatexmk``.
+                    ``pdflatex``, ``xelatexmk`` or `lualatexmk`.
     """
     if builder is None:
         builders = PREFERRED_BUILDERS
