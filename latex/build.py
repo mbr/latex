@@ -100,6 +100,7 @@ class LatexMkBuilder(LatexBuilder):
             elif self.variant == 'lualatex':
                 args = [self.latexmk,
                         '-lualatex',
+                        '-latexoption=--file-line-error',
                         tmp.name]
             else:
                 raise ValueError('Invalid LaTeX variant: {}'.format(

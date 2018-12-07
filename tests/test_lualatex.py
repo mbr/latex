@@ -1,5 +1,6 @@
-from latex import build_pdf
+from latex import build_pdf, LatexBuildError
 from latex.build import LatexMkBuilder
+
 
 # the example below should not compile on pdflatex, but on lualatex
 min_latex = r"""
@@ -34,3 +35,12 @@ def test_lualatexmk():
     pdf = build_pdf(min_latex, builder='lualatexmk')
 
     assert pdf
+
+
+def test_luatextmk_errorlog():
+    """Check if parsing of error lines works."""
+    f_min_latex = min_latex.replace(r"\maketitle", r"\makexxx")
+    try:
+        build_pdf(f_min_latex, builder='lualatexmk')
+    except LatexBuildError as err:
+        assert err.get_errors()
