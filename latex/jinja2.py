@@ -14,11 +14,11 @@ class LatexMarkup(Markup):
         raise NotImplementedError
 
     @classmethod
-    def escape(cls, s):
+    def escape(cls, s, *args, **kwargs):
         if hasattr(s, '__html__'):
             return s.__html__()
 
-        rv = escape(s)
+        rv = escape(s, *args, **kwargs)
         if rv.__class__ is not cls:
             return cls(rv)
         return rv
