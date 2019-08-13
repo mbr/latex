@@ -89,7 +89,7 @@ class LatexMkBuilder(LatexBuilder):
                 args = [self.latexmk,
                         '-pdf',
                         '-pdflatex={}'.format(' '.join(latex_cmd)),
-                        tmp.name, ]
+                        tmp.name.replace('\\', '/'), ]
             elif self.variant == 'xelatex':
                 args = [self.latexmk,
                         '-xelatex',
