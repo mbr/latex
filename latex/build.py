@@ -110,7 +110,7 @@ class LatexMkBuilder(LatexBuilder):
                                capture_output=True,
                               )
             except CalledProcessError as e:
-                assert not e.stdout
+                print(e.stdout)
                 print(e.stderr)
                 raise_from(LatexBuildError(base_fn + '.log'), e)
 
