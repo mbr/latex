@@ -103,13 +103,15 @@ class LatexMkBuilder(LatexBuilder):
             newenv['TEXINPUTS'] = os.pathsep.join(texinputs) + os.pathsep
 
             try:
-                subprocess.check_call(args,
-                                      cwd=tmpdir,
-                                      env=newenv,
-                                      stdin=open(os.devnull, 'r'),
-                                      stdout=open(os.devnull, 'w'),
-                                      stderr=open(os.devnull, 'w'), )
+                subprocess.run(args,
+                               cwd=tmpdir,
+                               check=True,
+                               env=newenv,
+                               capture_output=True,
+                              )
             except CalledProcessError as e:
+                assert not e.stdout
+                print(e.stderr)
                 raise_from(LatexBuildError(base_fn + '.log'), e)
 
             return I(open(output_fn, 'rb').read(), encoding=None)
