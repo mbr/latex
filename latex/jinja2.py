@@ -2,6 +2,7 @@ from __future__ import absolute_import
 
 from markupsafe import Markup
 from jinja2 import Environment
+from jinja2.runtime import Undefined
 
 from . import escape
 
@@ -15,6 +16,8 @@ class LatexMarkup(Markup):
 
     @classmethod
     def escape(cls, s):
+        if isinstance(s, Undefined):
+            return s
         if hasattr(s, '__html__'):
             return s.__html__()
 
