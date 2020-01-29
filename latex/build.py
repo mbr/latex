@@ -89,11 +89,11 @@ class LatexMkBuilder(LatexBuilder):
                 args = [self.latexmk,
                         '-pdf',
                         '-pdflatex={}'.format(' '.join(latex_cmd)),
-                        tmp.name, ]
+                        os.path.basename(tmp.name), ]
             elif self.variant == 'xelatex':
                 args = [self.latexmk,
                         '-xelatex',
-                        tmp.name, ]
+                        os.path.basename(tmp.name), ]
             else:
                 raise ValueError('Invalid LaTeX variant: {}'.format(
                     self.variant))
@@ -157,7 +157,7 @@ class PdfLatexBuilder(LatexBuilder):
             output_fn = base_fn + '.pdf'
             aux_fn = base_fn + '.aux'
             args = [self.pdflatex, '-interaction=batchmode', '-halt-on-error',
-                    '-no-shell-escape', '-file-line-error', tmp.name]
+                    '-no-shell-escape', '-file-line-error', os.path.basename(tmp.name)]
 
             # create environment
             newenv = os.environ.copy()
