@@ -78,3 +78,23 @@ Finally, ``doc.latex`` shows why the ``%-`` syntax is usually preferable:
     %- block body
     Hello, \VAR{name|e}.
     %- endblock
+
+
+Translations using Babel
+------------------------
+
+Strings from ``.latex``-templates can be extracted, provided your  `babel.cfg` is setup correctly:
+
+.. code-block:: ini
+
+    [jinja2: *.latex]
+    block_start_string = \BLOCK{
+    block_end_string = }
+    variable_start_string = \VAR{
+    variable_end_string = }
+    comment_start_string = \#{
+    comment_end_string = }
+    line_statement_prefix = %-
+    line_comment_prefix = %#
+    trim_blocks = True
+    autoescape = False
