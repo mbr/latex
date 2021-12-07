@@ -15,7 +15,7 @@ from .exc import LatexBuildError
 class LatexBuilder(object):
     """Base class for Latex builders."""
 
-    def build_pdf(self, source, texinputs=[]):
+    def build_pdf(self, source, texinputs=[], halt_on_error=True):
         """Generates a PDF from LaTeX a source.
 
         If there are errors generating a ``LatexError`` is raised.
@@ -70,7 +70,7 @@ class LatexMkBuilder(LatexBuilder):
         self.variant = variant
 
     @data('source')
-    def build_pdf(self, source, texinputs=[]):
+    def build_pdf(self, source, texinputs=[], halt_on_error=True):
         with TempDir() as tmpdir,\
                 source.temp_saved(suffix='.latex', dir=tmpdir) as tmp:
 
@@ -79,14 +79,14 @@ class LatexMkBuilder(LatexBuilder):
 
             base_fn = os.path.splitext(tmp.name)[0]
             output_fn = base_fn + '.pdf'
-
             latex_cmd = [shlex_quote(self.pdflatex),
                          '-interaction=batchmode',
-                         '-halt-on-error',
                          '-no-shell-escape',
                          '-file-line-error',
                          '%O',
                          '%S', ]
+            if halt_on_error:
+                latex_cmd.insert(2, '-halt-on-error')
 
             if self.variant == 'pdflatex':
                 args = [self.latexmk,
@@ -97,11 +97,15 @@ class LatexMkBuilder(LatexBuilder):
                 args = [self.latexmk,
                         '-xelatex',
                         tmp.name, ]
+                if not halt_on_error:
+                    args.insert(2, '-latexoption=-interaction=batchmode')
             elif self.variant == 'lualatex':
                 args = [self.latexmk,
                         '-lualatex',
                         '-latexoption=--file-line-error',
                         tmp.name]
+                if not halt_on_error:
+                    args.insert(2, '-latexoption=-interaction=batchmode')
             else:
                 raise ValueError('Invalid LaTeX variant: {}'.format(
                     self.variant))
@@ -219,7 +223,7 @@ BUILDERS = {
 PREFERRED_BUILDERS = ('latexmk', 'pdflatex', 'xelatexmk', 'lualatexmk')
 
 
-def build_pdf(source, texinputs=[], builder=None):
+def build_pdf(source, texinputs=[], builder=None, halt_on_error=True):
     """Builds a LaTeX source to PDF.
 
     Will automatically instantiate an available builder (or raise a
@@ -243,7 +247,7 @@ def build_pdf(source, texinputs=[], builder=None):
         builder = bld_cls()
         if not builder.is_available():
             continue
-        return builder.build_pdf(source, texinputs)
+        return builder.build_pdf(source, texinputs, halt_on_error)
     else:
         raise RuntimeError('No available builder could be instantiated. '
                            'Please make sure LaTeX is installed.')
