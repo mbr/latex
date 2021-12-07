@@ -170,8 +170,7 @@ class PdfLatexBuilder(LatexBuilder):
             base_fn = os.path.splitext(tmp.name)[0]
             output_fn = base_fn + '.pdf'
             aux_fn = base_fn + '.aux'
-            args = [self.pdflatex, '-interaction=batchmode', halt_opt,
-                    '-no-shell-escape', '-file-line-error', tmp.name]
+            args = [self.pdflatex, '-interaction=batchmode']
             if halt_on_error:
                 args.insert(2, '-halt-on-error')
 
