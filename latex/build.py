@@ -155,7 +155,7 @@ class PdfLatexBuilder(LatexBuilder):
         self.max_runs = 15
 
     @data('source')
-    def build_pdf(self, source, texinputs=[]):
+    def build_pdf(self, source, texinputs=[], halt_on_error=True):
         with TempDir() as tmpdir,\
                 source.temp_saved(suffix='.latex', dir=tmpdir) as tmp:
 
@@ -166,7 +166,11 @@ class PdfLatexBuilder(LatexBuilder):
             base_fn = os.path.splitext(tmp.name)[0]
             output_fn = base_fn + '.pdf'
             aux_fn = base_fn + '.aux'
-            args = [self.pdflatex, '-interaction=batchmode', '-halt-on-error',
+            if halt_on_error:
+                halt_opt = '-halt-on-error'
+            else:
+                halt_opt = ''
+            args = [self.pdflatex, '-interaction=batchmode', halt_opt,
                     '-no-shell-escape', '-file-line-error', tmp.name]
 
             # create environment
