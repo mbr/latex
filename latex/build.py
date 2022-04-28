@@ -61,80 +61,95 @@ class LatexMkBuilder(LatexBuilder):
                     `pdflatex`, `xelatex` and `lualatex`. Defaults to `pdflatex`.
     """
 
-    def __init__(self, latexmk='latexmk', pdflatex='pdflatex',
-                 xelatex='xelatex', lualatex='lualatex', variant='pdflatex'):
+    def __init__(
+        self,
+        latexmk="latexmk",
+        pdflatex="pdflatex",
+        xelatex="xelatex",
+        lualatex="lualatex",
+        variant="pdflatex",
+    ):
         self.latexmk = latexmk
         self.pdflatex = pdflatex
         self.xelatex = xelatex
         self.lualatex = lualatex
         self.variant = variant
 
-    @data('source')
+    @data("source")
     def build_pdf(self, source, texinputs=[], halt_on_error=True):
-        with TempDir() as tmpdir,\
-                source.temp_saved(suffix='.latex', dir=tmpdir) as tmp:
+        with TempDir() as tmpdir, source.temp_saved(suffix=".latex", dir=tmpdir) as tmp:
 
             # close temp file, so other processes can access it also on Windows
             tmp.close()
 
             base_fn = os.path.splitext(tmp.name)[0]
-            output_fn = base_fn + '.pdf'
-            latex_cmd = [shlex_quote(self.pdflatex),
-                         '-interaction=batchmode',
-                         '-no-shell-escape',
-                         '-file-line-error',
-                         '%O',
-                         '%S', ]
+            output_fn = base_fn + ".pdf"
+            latex_cmd = [
+                shlex_quote(self.pdflatex),
+                "-interaction=batchmode",
+                "-no-shell-escape",
+                "-file-line-error",
+                "%O",
+                "%S",
+            ]
             if halt_on_error:
-                latex_cmd.insert(2, '-halt-on-error')
+                latex_cmd.insert(2, "-halt-on-error")
 
-            if self.variant == 'pdflatex':
-                args = [self.latexmk,
-                        '-pdf',
-                        '-pdflatex={}'.format(' '.join(latex_cmd)),
-                        tmp.name, ]
-            elif self.variant == 'xelatex':
-                args = [self.latexmk,
-                        '-xelatex',
-                        tmp.name, ]
+            if self.variant == "pdflatex":
+                args = [
+                    self.latexmk,
+                    "-pdf",
+                    "-pdflatex={}".format(" ".join(latex_cmd)),
+                    tmp.name,
+                ]
+            elif self.variant == "xelatex":
+                args = [
+                    self.latexmk,
+                    "-xelatex",
+                    tmp.name,
+                ]
                 if not halt_on_error:
-                    args.insert(2, '-latexoption=-interaction=batchmode')
-            elif self.variant == 'lualatex':
-                args = [self.latexmk,
-                        '-lualatex',
-                        '-latexoption=--file-line-error',
-                        tmp.name]
+                    args.insert(2, "-latexoption=-interaction=batchmode")
+            elif self.variant == "lualatex":
+                args = [
+                    self.latexmk,
+                    "-lualatex",
+                    "-latexoption=--file-line-error",
+                    tmp.name,
+                ]
                 if not halt_on_error:
-                    args.insert(2, '-latexoption=-interaction=batchmode')
+                    args.insert(2, "-latexoption=-interaction=batchmode")
             else:
-                raise ValueError('Invalid LaTeX variant: {}'.format(
-                    self.variant))
+                raise ValueError("Invalid LaTeX variant: {}".format(self.variant))
 
             # create environment
             newenv = os.environ.copy()
-            newenv['TEXINPUTS'] = os.pathsep.join(texinputs) + os.pathsep
+            newenv["TEXINPUTS"] = os.pathsep.join(texinputs) + os.pathsep
 
             try:
-                subprocess.check_call(args,
-                                      cwd=tmpdir,
-                                      env=newenv,
-                                      stdin=open(os.devnull, 'r'),
-                                      stdout=open(os.devnull, 'w'),
-                                      stderr=open(os.devnull, 'w'), )
+                subprocess.check_call(
+                    args,
+                    cwd=tmpdir,
+                    env=newenv,
+                    stdin=open(os.devnull, "r"),
+                    stdout=open(os.devnull, "w"),
+                    stderr=open(os.devnull, "w"),
+                )
             except CalledProcessError as e:
-                raise_from(LatexBuildError(base_fn + '.log'), e)
+                if halt_on_error:
+                    raise_from(LatexBuildError(base_fn + ".log"), e)
 
-            return I(open(output_fn, 'rb').read(), encoding=None)
+            return I(open(output_fn, "rb").read(), encoding=None)
 
     def is_available(self):
         if not which(self.latexmk):
             return False
 
-        if self.variant == 'pdflatex':
+        if self.variant == "pdflatex":
             return bool(which(self.pdflatex))
-        if self.variant == 'xelatex':
+        if self.variant == "xelatex":
             return bool(which(self.xelatex))
-        if self.variant == 'lualatex':
+        if self.variant == "lualatex":
             return bool(which(self.lualatex))
 
 
@@ -154,46 +169,51 @@ class PdfLatexBuilder(LatexBuilder):
                      ``pdflatex`` can be rerun before an exception is thrown.
     """
 
-    def __init__(self, pdflatex='pdflatex', max_runs=15):
+    def __init__(self, pdflatex="pdflatex", max_runs=15):
         self.pdflatex = pdflatex
         self.max_runs = 15
 
-    @data('source')
+    @data("source")
     def build_pdf(self, source, texinputs=[], halt_on_error=True):
-        with TempDir() as tmpdir,\
-                source.temp_saved(suffix='.latex', dir=tmpdir) as tmp:
+        with TempDir() as tmpdir, source.temp_saved(suffix=".latex", dir=tmpdir) as tmp:
 
             # close temp file, so other processes can access it also on Windows
             tmp.close()
 
             # calculate output filename
             base_fn = os.path.splitext(tmp.name)[0]
-            output_fn = base_fn + '.pdf'
-            aux_fn = base_fn + '.aux'
-            args = [self.pdflatex, '-interaction=batchmode', 
-		    '-no-shell-escape', '-file-line-error']
+            output_fn = base_fn + ".pdf"
+            aux_fn = base_fn + ".aux"
+            args = [
+                self.pdflatex,
+                "-interaction=batchmode",
+                "-no-shell-escape",
+                "-file-line-error",
+            ]
             if halt_on_error:
-                args.insert(2, '-halt-on-error')
+                args.insert(2, "-halt-on-error")
 
             # create environment
             newenv = os.environ.copy()
-            newenv['TEXINPUTS'] = os.pathsep.join(texinputs) + os.pathsep
+            newenv["TEXINPUTS"] = os.pathsep.join(texinputs) + os.pathsep
 
             # run until aux file settles
             prev_aux = None
             runs_left = self.max_runs
             while runs_left:
                 try:
-                    subprocess.check_call(args,
-                                          cwd=tmpdir,
-                                          env=newenv,
-                                          stdin=open(os.devnull, 'r'),
-                                          stdout=open(os.devnull, 'w'), )
+                    subprocess.check_call(
+                        args,
+                        cwd=tmpdir,
+                        env=newenv,
+                        stdin=open(os.devnull, "r"),
+                        stdout=open(os.devnull, "w"),
+                    )
                 except CalledProcessError as e:
-                    raise_from(LatexBuildError(base_fn + '.log'), e)
+                    raise_from(LatexBuildError(base_fn + ".log"), e)
 
                 # check aux-file
-                aux = open(aux_fn, 'rb').read()
+                aux = open(aux_fn, "rb").read()
 
                 if aux == prev_aux:
                     break
@@ -202,23 +222,24 @@ class PdfLatexBuilder(LatexBuilder):
                 runs_left -= 1
             else:
                 raise RuntimeError(
-                    'Maximum number of runs ({}) without a stable .aux file '
-                    'reached.'.format(self.max_runs))
+                    "Maximum number of runs ({}) without a stable .aux file "
+                    "reached.".format(self.max_runs)
+                )
 
-            return I(open(output_fn, 'rb').read(), encoding=None)
+            return I(open(output_fn, "rb").read(), encoding=None)
 
     def is_available(self):
         return bool(which(self.pdflatex))
 
 
 BUILDERS = {
-    'latexmk': LatexMkBuilder,
-    'pdflatex': PdfLatexBuilder,
-    'xelatexmk': lambda: LatexMkBuilder(variant='xelatex'),
-    'lualatexmk': lambda: LatexMkBuilder(variant='lualatex'),
+    "latexmk": LatexMkBuilder,
+    "pdflatex": PdfLatexBuilder,
+    "xelatexmk": lambda: LatexMkBuilder(variant="xelatex"),
+    "lualatexmk": lambda: LatexMkBuilder(variant="lualatex"),
 }
 
-PREFERRED_BUILDERS = ('latexmk', 'pdflatex', 'xelatexmk', 'lualatexmk')
+PREFERRED_BUILDERS = ("latexmk", "pdflatex", "xelatexmk", "lualatexmk")
 
 
 def build_pdf(source, texinputs=[], builder=None, halt_on_error=True):
@@ -237,9 +258,9 @@ def build_pdf(source, texinputs=[], builder=None, halt_on_error=True):
     if builder is None:
         builders = PREFERRED_BUILDERS
     elif builder not in BUILDERS:
-        raise RuntimeError('Invalid Builder specified: {}'.format(builder))
+        raise RuntimeError("Invalid Builder specified: {}".format(builder))
     else:
-        builders = (builder, )
+        builders = (builder,)
     for bld in builders:
         bld_cls = BUILDERS[bld]
         builder = bld_cls()
@@ -247,5 +268,7 @@ def build_pdf(source, texinputs=[], builder=None, halt_on_error=True):
             continue
         return builder.build_pdf(source, texinputs, halt_on_error)
     else:
-        raise RuntimeError('No available builder could be instantiated. '
-                           'Please make sure LaTeX is installed.')
+        raise RuntimeError(
+            "No available builder could be instantiated. "
+            "Please make sure LaTeX is installed."
+        )
