@@ -154,7 +154,7 @@ class LatexMkBuilder(LatexBuilder):
 
 
 class PdfLatexBuilder(LatexBuilder):
-    """A simple pdflatex based buidler for LaTeX files.
+    """A simple pdflatex based builder for LaTeX files.
 
     Builds LaTeX files by copying them to a temporary directly and running
     ``pdflatex`` until the associated ``.aux`` file stops changing.
@@ -182,6 +182,7 @@ class PdfLatexBuilder(LatexBuilder):
 
             # calculate output filename
             base_fn = os.path.splitext(tmp.name)[0]
+
             output_fn = base_fn + ".pdf"
             aux_fn = base_fn + ".aux"
             args = [
@@ -189,6 +190,7 @@ class PdfLatexBuilder(LatexBuilder):
                 "-interaction=batchmode",
                 "-no-shell-escape",
                 "-file-line-error",
+                tmp.name,
             ]
             if halt_on_error:
                 args.insert(2, "-halt-on-error")
@@ -210,7 +212,8 @@ class PdfLatexBuilder(LatexBuilder):
                         stdout=open(os.devnull, "w"),
                     )
                 except CalledProcessError as e:
-                    raise_from(LatexBuildError(base_fn + ".log"), e)
+                    if halt_on_error:
+                        raise_from(LatexBuildError(base_fn + ".log"), e)
 
                 # check aux-file
                 aux = open(aux_fn, "rb").read()
@@ -234,7 +237,8 @@ class PdfLatexBuilder(LatexBuilder):
 
 BUILDERS = {
     "latexmk": LatexMkBuilder,
-    "pdflatex": PdfLatexBuilder,
+    # "pdflatex": PdfLatexBuilder,  # this is not reliable!
+    "pdflatex": LatexMkBuilder,
     "xelatexmk": lambda: LatexMkBuilder(variant="xelatex"),
     "lualatexmk": lambda: LatexMkBuilder(variant="lualatex"),
 }
