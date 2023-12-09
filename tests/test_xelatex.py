@@ -6,7 +6,7 @@ min_latex = r"""
 \documentclass[12pt]{article}
 \usepackage{fontspec}
 
-\setmainfont{Times New Roman}
+\setmainfont{TeX Gyre Termes}
 
  \title{Sample font document}
  \author{Hubert Farnsworth}
