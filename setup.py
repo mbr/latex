@@ -20,7 +20,7 @@ setup(
     url='http://github.com/mbr/latex',
     license='MIT',
     packages=find_packages(exclude=['tests']),
-    install_requires=['tempdir', 'data', 'shutilwhich'],
+    install_requires=['tempdir', 'data'],
     classifiers=[
         'Programming Language :: Python :: 3',
     ]

@@ -4,7 +4,7 @@ from subprocess import CalledProcessError
 
 from data import Data as I
 from data.decorators import data
-from shutilwhich import which
+from shutil import which
 from six.moves import shlex_quote
 from tempdir import TempDir
 
