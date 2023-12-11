@@ -2,7 +2,6 @@ import os
 import subprocess
 from subprocess import CalledProcessError
 
-from future.utils import raise_from
 from data import Data as I
 from data.decorators import data
 from shutilwhich import which
@@ -110,7 +109,7 @@ class LatexMkBuilder(LatexBuilder):
                                       stdout=open(os.devnull, 'w'),
                                       stderr=open(os.devnull, 'w'), )
             except CalledProcessError as e:
-                raise_from(LatexBuildError(base_fn + '.log'), e)
+                raise LatexBuildError(base_fn + '.log') from e
 
             return I(open(output_fn, 'rb').read(), encoding=None)
 
@@ -174,7 +173,7 @@ class PdfLatexBuilder(LatexBuilder):
                                           stdin=open(os.devnull, 'r'),
                                           stdout=open(os.devnull, 'w'), )
                 except CalledProcessError as e:
-                    raise_from(LatexBuildError(base_fn + '.log'), e)
+                    raise LatexBuildError(base_fn + '.log') from e
 
                 # check aux-file
                 aux = open(aux_fn, 'rb').read()
