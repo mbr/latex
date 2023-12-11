@@ -1,4 +1,4 @@
-from __future__ import absolute_import
+
 
 from markupsafe import Markup
 from jinja2 import Environment
