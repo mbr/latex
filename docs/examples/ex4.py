@@ -13,7 +13,7 @@ try:
     build_pdf(src)
 except LatexBuildError as e:
     for err in e.get_errors():
-        print u'Error in {0[filename]}, line {0[line]}: {0[error]}'.format(err)
+        print('Error in {0[filename]}, line {0[line]}: {0[error]}'.format(err))
         # also print one line of context
-        print u'    {}'.format(err['context'][1])
-        print
+        print('    {}'.format(err['context'][1]))
+        print()

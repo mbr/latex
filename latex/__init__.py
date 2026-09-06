@@ -4,26 +4,26 @@ from .exc import LatexBuildError
 from .build import build_pdf
 
 CHAR_ESCAPE = {
-    u'&': u'\\&',
-    u'%': u'\\%',
-    u'$': u'\\$',
-    u'#': u'\\#',
-    u'_': u'\\_',
-    u'{': u'\\{',
-    u'}': u'\\}',
-    u'~': u'\\textasciitilde{}',
-    u'^': u'\\textasciicircum{}',
-    u'\\': u'\\textbackslash{}',
+    '&': '\\&',
+    '%': '\\%',
+    '$': '\\$',
+    '#': '\\#',
+    '_': '\\_',
+    '{': '\\{',
+    '}': '\\}',
+    '~': '\\textasciitilde{}',
+    '^': '\\textasciicircum{}',
+    '\\': '\\textbackslash{}',
 
     # these may be optional:
-    u'<': u'\\textless{}',
-    u'>': u'\\textgreater{}',
-    u'|': u'\\textbar{}',
-    u'"': u'\\textquotedbl{}',
+    '<': '\\textless{}',
+    '>': '\\textgreater{}',
+    '|': '\\textbar{}',
+    '"': '\\textquotedbl{}',
 
     # to prevent issues with '\\' linebreaks
-    u'[': u'{[}',
-    u']': u'{]}',
+    '[': '{[}',
+    ']': '{]}',
 }
 
 
