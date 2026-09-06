@@ -1,0 +1,8 @@
+*.pyc    
+venv/
+*.zip
+*.lock
+*.log
+.vscode/
+latex.egg-info/
+sample.pdf
